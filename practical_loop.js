@@ -47,6 +47,8 @@ for (let i = 1; i <= 100; i++) {
     
 }
 
+console.log('--- PART 2 PRIME TIME ---');
+
 // Remember to commit your solution once it is working.
 
 // Part 2: Prime Time
@@ -99,6 +101,9 @@ if (isPrime === true) {
 }
 
 }
+
+console.log('--- PART 3---');
+
 // Part 3
 
 // As a final task, solve the following practical problem 
@@ -119,8 +124,10 @@ if (isPrime === true) {
 // 98,Bill,Doctor’s Assistant,26
 
 
-const csvData = "ID,Name,Occupation,Age\n42,Bruce,Knight,41\n57,Bob,Fry Cook,19\n63,Blaine,Quiz Master,58\n98,Bill,Doctor’s Assistant,26";
+const csvData = `ID,Name,Occupation,Age\n42,Bruce,Knight,41\n57,Bob,Fry Cook,19\n63,Blaine,Quiz Master,58\n98,Bill,Doctor’s Assistant,26`;
 
+
+// Without Arrays:
 // Your task is to write a script that accomplishes the following:
 // Loop through the characters of a given CSV string.
 console.log(`CSV Data:\n${csvData}\n`);
@@ -170,7 +177,9 @@ for (let i = 0; i < csvData.length; i++) {
         console.log(`Row: ${cell1}, ${cell2}, ${cell3}, ${cell4}`); // log the last row data
     }
 
-// NBA‑style pseudocode***********************************************************************
+
+
+// NBA‑style pseudocode****************************************************************************************
 // FOR each symbol in the playbook
 //     IF symbol is a pass (',')
 //         SAVE the current dribble (currentCell) to the player who just finished (cell1‑cell3)
@@ -186,8 +195,96 @@ for (let i = 0; i < csvData.length; i++) {
 
 // IF there is still a dribble left after the loop
 //     SAVE it to the fourth player and announce the final line‑up
-// ********************************************************************************
+// **************************************************************************************************************
 
+
+console.log('--- Parsing with Arrays ---');
+    // With Arrays:
+    // 1) count columns dynamically from the header row
+
+    let numColumns = 1; // initialize number of columns to 1
+    for (let i = 0; i < csvData.length; i++) {
+        
+        if (csvData[i] === '\n') break; // count columns by 
+        // counting commas in the header row
+        
+        if (csvData[i] === ',') numColumns++; // count rows by 
+        // counting new line characters
+    }
+
+// 2) build the 2D array
+let table = []; // parent array to cache 
+let row = []; // child array to cache current row data
+let cell = ""; // variable to build current cell data
+
+for (let i = 0; i < csvData.length; i++) { // loop through each character in the CSV data
+    let char = csvData[i]; // store the current character in a 
+    // variable
+
+    if (char === ",") { // if we encounter a comma, we have reached the end of a cell
+        row.push(cell); // add the current cell data to the current row array
+        cell = ""; // reset the cell variable for the next cell
+    } else if (char === "\n") { // if we encounter a new line, we have reached the end of a row
+        row.push(cell); // add the last cell data to the current row array
+        table.push(row); // add the current row array to the table array
+        row = []; // reset the row array for the next row
+        cell = ""; // reset the cell variable for the next cell
+    } else {
+        cell += char; // add the current character to the current cell data
+    }
+}
+
+// Push the final cell and row 
+row.push(cell); // add the last cell data to the current row array
+table.push(row); // add the last row array to the table array
+
+console.log("Parsed " + numColumns + " columns");
+console.log(table);
+
+// NBA pseudocode****************************************************************************************
+// csvData = one giant messy NBA stat sheet as a long string
+// table = the full league spreadsheet
+// row = one team’s row of stats
+// cell = one single stat you’re currently reading, like "LeBron" or "27.1"
+
+// cell is like reading one stat at a time
+// for example: player name, points, rebounds, assists
+// row is like building one player’s full stat line
+// table is like storing the whole roster sheet
+
+// let table = [];
+// this is the full NBA spreadsheet, like all players on all rows
+// let row = [];
+// this is the current player’s stat line you’re building
+// let cell = "";
+// this is the current stat box you’re filling in, one character at a time
+// Inside the loop:
+
+// let char = csvData[i];
+// you’re looking at one character at a time, like reading the stat sheet letter by letter
+// if (char === ",")
+// a comma means: “this stat is done”
+// like you finished reading "LeBron"
+// so:
+// row.push(cell) = put that completed stat into the player’s stat line
+// cell = "" = clear the box for the next stat
+// else if (char === "\n")
+// newline means: “this whole player row is done”
+// so:
+// row.push(cell) = save the last stat in that row
+// table.push(row) = save the whole player stat line into the big spreadsheet
+// row = [] = start a fresh row for the next player
+// cell = "" = start a fresh stat box
+// else { cell += char; }
+// if it’s not a comma or newline, keep building the current stat
+// like reading "L", then "Le", then "Leb", then "LeBron"
+// At the end:
+
+// row.push(cell);
+// save the last stat because the file might end without a newline
+// table.push(row);
+// save the last player row
+// ******************************************************************
 
 
 
