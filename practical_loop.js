@@ -123,17 +123,18 @@ const csvData = "ID,Name,Occupation,Age\n42,Bruce,Knight,41\n57,Bob,Fry Cook,19\
 
 // Your task is to write a script that accomplishes the following:
 // Loop through the characters of a given CSV string.
-console.log(`CSV Data: ${csvData}`);
-
-console.log(`CSV LOOP: Looping through each character in the CSV data: `);
+console.log(`CSV Data:\n${csvData}\n`);
+console.log('--- Parsing rows ---');
 
 // Store each “cell” of data.
-let cell1 = "";
-let cell2 = "";
-let cell3 = "";
-let cell4 = "";
-let currentCell = "";
-let cellNumber = 1;
+//4 players on the floor 
+let cell1 = "";   //PG
+let cell2 = "";  //SG
+let cell3 = "";  //SF
+let cell4 = "";   //PF
+let currentCell = "";   //active column.  //The ball being passed around while a player is still dribbling (adding letters).
+let cellNumber = 1;  //Index (1‑4) that tells which column we are filling. Which player has the ball
+
 
 for (let i = 0; i < csvData.length; i++) {
     const char = csvData[i];   // store the current character in a variable 
@@ -151,17 +152,44 @@ for (let i = 0; i < csvData.length; i++) {
         }
         currentCell = "";
         cellNumber++;
-    } else if (char === '\n') {
-        cell4 = currentCell;
+        continue; // move to the next character after processing a comma
+    } if (char === '\n') {
+        cell4 = currentCell;   //4th cell is stored when we encounter a new line character
         console.log(`Row: ${cell1}, ${cell2}, ${cell3}, ${cell4}`); 
         //  log the current row data and reset the cell variables for 
         // the next row
+        cell1 = cell2 = cell3 = cell4 = "";   // reset all cell variables
         currentCell = "";
         cellNumber = 1;
+        continue; // move to the next character after processing a new line
+     }
+     currentCell += char; // add the current character to the current cell data
     }
-    console.log(csvData[i]);
+    if (currentCell !== "") { // if there is any remaining cell data after the loop, log it as the last row
+        cell4 = currentCell; // store the last cell data in cell4
+        console.log(`Row: ${cell1}, ${cell2}, ${cell3}, ${cell4}`); // log the last row data
+    }
 
-}
+// NBA‑style pseudocode***********************************************************************
+// FOR each symbol in the playbook
+//     IF symbol is a pass (',')
+//         SAVE the current dribble (currentCell) to the player who just finished (cell1‑cell3)
+//         CLEAR dribble buffer
+//         MOVE ball to next player (cellNumber++)
+//     ELSE IF symbol is end‑of‑play ('\n')
+//         SAVE the final dribble to the fourth player (cell4)
+//         ANNOUNCE the completed line‑up (log the row)
+//         RESET all players and ball for next play
+//     ELSE
+//         ADD symbol to current dribble (currentCell)
+// END FOR
+
+// IF there is still a dribble left after the loop
+//     SAVE it to the fourth player and announce the final line‑up
+// ********************************************************************************
+
+
+
 
 // When you encounter a comma, move to the next cell.
 // When you encounter the “\r\n” sequence, move to the next “row.”
